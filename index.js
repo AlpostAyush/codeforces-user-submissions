@@ -10,56 +10,32 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
-// If you have static files (images, CSS, etc.), place them in "public" folder:
 app.use(express.static(path.join(__dirname, 'public')));
-
-/**
- * Route: GET /
- * Renders the sleek "index.ejs" search page.
- * If user typed ?handle=..., redirect to "/:handle".
- */
 app.get('/', (req, res) => {
   if (req.query.handle) {
-    // e.g. /?handle=tourist => redirect to /tourist
     return res.redirect(`/${req.query.handle}`);
   }
-  // Otherwise, just render the search page
   res.render('index');
 });
 
-/**
- * Route: GET /:handle
- * Example:  /tourist
- * Fetches user info & submissions from Codeforces, then renders "profile.ejs".
- */
 app.get('/:handle', async (req, res) => {
   const { handle } = req.params;
 
   try {
-    // 1) Fetch user info
     const userInfoRes = await axios.get(
       `https://codeforces.com/api/user.info?handles=${handle}`
     );
     const userInfo = userInfoRes.data.result[0];
-
-    // 2) Fetch user submissions
     const submissionsRes = await axios.get(
       `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=10000`
     );
     const submissions = submissionsRes.data.result || [];
-
-    // Filter accepted submissions
     const acceptedSubmissions = submissions.filter(
       (sub) => sub.verdict === 'OK'
     );
-
-    // 3) Build acceptedGrouped & problemStats
-    let acceptedGrouped = {};
-    let problemStats = {};
-
-    // (a) Group accepted by rating & track solvedCount
-    acceptedSubmissions.forEach((sub) => {
-      const rating = sub.problem.rating || 'Unrated';
+    let acceptedGrouped = {},problemStats = {};
+    acceptedSubmissions.forEach((sub) =>{
+      const rating =sub.problem.rating ||'Unrated' ;
       if (!acceptedGrouped[rating]) {
         acceptedGrouped[rating] = [];
       }
@@ -77,8 +53,6 @@ app.get('/:handle', async (req, res) => {
       }
       problemStats[problemKey].solvedCount++;
     });
-
-    // (b) Count total attempts for each problem
     submissions.forEach((sub) => {
       const problemKey = `${sub.problem.contestId}-${sub.problem.index}`;
       if (!problemStats[problemKey]) {
