@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Codeforces Profile - <%= userInfo.handle %></title>
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    /* Base Styling */
+    body {
+      background: #f7f8fa;
+      color: #333;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding-top: 60px; /* space for fixed navbar */
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .navbar {
+      background: #fff;
+      border-bottom: 1px solid #eaeaea;
+      padding: 1rem;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 999;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .nav-left, .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .nav-link {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      width: 0;
+      height: 2px;
+      background: #007bff;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover {
+      color: #007bff;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    #mode-toggle {
+      font-size: 14px;
+      padding: 8px 20px;
+      border-radius: 25px;
+      border: 1px solid #007bff;
+      cursor: pointer;
+      background: linear-gradient(45deg, #007bff, #0056b3);
+      color: #fff;
+      transition: transform 0.3s ease, filter 0.3s ease, background 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    #mode-toggle:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+    .user-info {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid #eaeaea;
+      margin-bottom: 1rem;
+    }
+    h1, h2, h3 {
+      font-weight: 700;
+    }
+    .rating-group {
+      margin-bottom: 20px;
+      background: #fff;
+      border: 1px solid #eaeaea;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      padding: 20px;
+    }
+    .rating-group h3 {
+      color: #007bff;
+      margin-bottom: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 0;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #eaeaea;
+      transition: background 0.2s ease;
+    }
+    th {
+      background: #f1f1f1;
+      font-weight: 700;
+    }
+    tr:hover {
+      background: #f9f9f9;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      border-top: 1px solid #eaeaea;
+      color: #666;
+    }
+    footer a {
+      margin: 0 10px;
+      transition: transform 0.3s ease;
+    }
+    footer a:hover {
+      transform: scale(1.1);
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      background: #121212;
+      color: #eaeaea;
+    }
+    body.dark-mode .navbar {
+      background: #1c1c1c;
+      border-bottom: 1px solid #333;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    body.dark-mode .nav-link {
+      color: #ddd;
+    }
+    body.dark-mode .nav-link::after {
+      background: #66b2ff;
+    }
+    body.dark-mode #mode-toggle {
+      background: linear-gradient(45deg, #444, #666);
+      border: 1px solid #555;
+      color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+    body.dark-mode .avatar {
+      border-color: #444;
+    }
+    body.dark-mode .rating-group {
+      background: #1c1c1c;
+      border: 1px solid #333;
+    }
+    body.dark-mode th {
+      background: #222;
+      color: #fff;
+    }
+    body.dark-mode td {
+      color: #d1d1d1;
+    }
+    body.dark-mode tr:hover {
+      background: #333;
+    }
+    body.dark-mode footer {
+      border-top: 1px solid #333;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div class="nav-left d-flex align-items-center gap-3">
+        <!-- Anchor tags for user info and submissions -->
+        <a href="#user-info" class="nav-link">User Profile</a>
+        <a href="#submissions" class="nav-link">User Submissions</a>
+      </div>
+      <div class="nav-right d-flex align-items-center gap-3">
+        <!-- Link to CF Profile -->
+        <a
+          href="https://codeforces.com/profile/<%= userInfo.handle %>"
+          target="_blank"
+          class="btn btn-primary"
+        >
+          View CF Profile
+        </a>
+        <!-- Dark/Light Mode Toggle -->
+        <button id="mode-toggle" class="btn">Dark Mode</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- User Info Section -->
+    <section id="user-info" class="user-info">
+      <img src="<%= userInfo.avatar %>" alt="User Avatar" class="avatar" />
+      <h1><%= userInfo.handle %></h1>
+      <p><strong>Rating:</strong> <%= userInfo.rating || "N/A" %></p>
+      <p><strong>Max Rating:</strong> <%= userInfo.maxRating || "N/A" %></p>
+      <p><strong>Rank:</strong> <%= userInfo.rank || "Unrated" %></p>
+      <p><strong>Max Rank:</strong> <%= userInfo.maxRank || "Unrated" %></p>
+    </section>
+
+    <!-- Submissions by Rating -->
+    <section id="submissions">
+      <% 
+        let ratingKeys = Object.keys(acceptedGrouped);
+        if (ratingKeys.length > 0) {
+          // Sort rating keys numerically or handle "Unrated" as 0
+          ratingKeys.sort(function(a, b) {
+            let aNum = parseInt(a, 10) || 0;
+            let bNum = parseInt(b, 10) || 0;
+            return aNum - bNum;
+          });
+
+          ratingKeys.forEach(function(rating) {
+            // Gather unique problem keys in this rating group
+            let uniqueProblems = {};
+            acceptedGrouped[rating].forEach(function(sub) {
+              let problemKey = sub.problem.contestId + "-" + sub.problem.index;
+              uniqueProblems[problemKey] = true;
+            });
+            // Count how many unique problems in this rating
+            let groupProblemCount = Object.keys(uniqueProblems).length;
+      %>
+        <div class="rating-group">
+          <!-- Show rating plus total problem count -->
+          <h3>Rating: <%= rating %> (Total <%= groupProblemCount %> Problems Solved)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Problem</th>
+                <th>Attempts</th>
+                <th>Accepted</th>
+                <th>User Acceptance Rate</th>
+                <th>Overall Acceptance Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% 
+                // Display each problem in the table
+                for (let problemKey in uniqueProblems) {
+                  let p = problemStats[problemKey];
+                  if (p) {
+              %>
+                <tr>
+                  <td>
+                    <a
+                      href="https://codeforces.com/contest/<%= problemKey.split('-')[0] %>/problem/<%= problemKey.split('-')[1] %>"
+                      target="_blank"
+                    >
+                      <%= p.name %> (<%= problemKey %>)
+                    </a>
+                  </td>
+                  <td><%= p.totalAttempts %></td>
+                  <td><%= p.solvedCount %></td>
+                  <td><%= p.userAcceptanceRate %>%</td>
+                  <td><%= p.overallAcceptanceRate %>%</td>
+                </tr>
+              <%   }
+                }
+              %>
+            </tbody>
+          </table>
+        </div>
+      <% 
+          });
+        } else {
+      %>
+        <p class="text-center">No accepted submissions found.</p>
+      <% } %>
+    </section>
+    <footer>
+      <p>
+        &copy; 2025 | Built with 
+        <span style="color: #f33;">&#x2764;</span>
+        by 
+        <a 
+          href="https://www.linkedin.com/in/ayush-ranjan-26a999348"
+          target="_blank"
+          style="text-decoration: underline;"
+        >
+          Alpost
+        </a>
+      </p>
+    
+      <p>
+        Any issue? Please suggest 
+        <a 
+          href="https://github.com/ayushranjan76" 
+          target="_blank" 
+          style="margin-left: 8px;"
+        >
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+            alt="GitHub"
+            width="30"
+            height="30"
+            style="filter: brightness(0) invert(1);"
+          />
+        </a>
+      </p>
+    </footer>
+    
+    
+  </div>
+
+  <!-- Dark/Light Mode Toggle Script -->
+  <script>
+    var toggleBtn = document.getElementById('mode-toggle');
+    toggleBtn.addEventListener('click', function() {
+      document.body.classList.toggle('dark-mode');
+      if (document.body.classList.contains('dark-mode')) {
+        toggleBtn.textContent = 'Light Mode';
+      } else {
+        toggleBtn.textContent = 'Dark Mode';
+      }
+    });
+  </script>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

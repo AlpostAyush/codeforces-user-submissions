@@ -1,0 +1,54 @@
+// Define Colors
+$primary-color: #007bff;
+$hover-color: #0056b3;
+$background-color: #f8f9fa;
+
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: $background-color;
+}
+
+/* Navbar Styling */
+.navbar {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Styling */
+section {
+    background: #ffffff;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.3s;
+
+    &:hover {
+        transform: scale(1.02);
+    }
+}
+
+/* Buttons & Links */
+.problem-link {
+    color: $primary-color;
+    font-weight: bold;
+    transition: 0.3s;
+
+    &:hover {
+        color: $hover-color;
+        text-decoration: underline;
+    }
+}
+
+/* Table Styling */
+table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th {
+    background: $primary-color;
+    color: white;
+}
+
+tr:hover {
+    background: rgba(0, 123, 255, 0.1);
+}
